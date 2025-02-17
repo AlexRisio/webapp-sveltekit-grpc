@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package counter;
+
+option go_package = "github.com/AlexRisio/webapp-sveltekit-grpc/backend/counterpb";
+
+service Counter {
+  rpc Increment(IncrementRequest) returns (IncrementResponse);
+}
+
+message IncrementRequest {}
+
+message IncrementResponse {
+  int64 value = 1;
+}

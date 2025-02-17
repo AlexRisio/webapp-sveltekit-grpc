@@ -1,2 +1,15 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+    let counterValue = 0;
+
+    async function increment() {
+        const res = await fetch('/api/increment');
+        const data = await res.json();
+        counterValue = data.value;
+    }
+</script>
+
+<main>
+    <h1>Counter App</h1>
+    <button on:click={increment}>Increment Counter</button>
+    <p>Counter Value: {counterValue}</p>
+</main>
