@@ -19,5 +19,12 @@
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
 		"vite": "^6.0.0"
+	},
+	"dependencies": {
+		"@bufbuild/connect": "^0.13.0",
+		"@grpc/grpc-js": "^1.12.6",
+		"@grpc/proto-loader": "^0.7.13",
+		"google-protobuf": "^3.21.4",
+		"grpc-web": "^1.5.0"
 	}
 }

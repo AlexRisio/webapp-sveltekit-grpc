@@ -6,8 +6,7 @@ import (
 	"net"
 	"sync/atomic"
 
-	"github.com/AlexRisio/webapp-sveltekit-grpc/backend/counterpb" // Local import path
-	"github.com/bufbuild/connect-go"
+	"github.com/AlexRisio/webapp-sveltekit-grpc/backend/counterpb" // Correct import path for local package
 	"google.golang.org/grpc"
 )
 
@@ -20,12 +19,12 @@ type CounterServer struct {
 }
 
 // Increment increments the counter and returns the new value.
-func (s *CounterServer) Increment(ctx context.Context, req *connect.Request[counterpb.IncrementRequest]) (*connect.Response[counterpb.IncrementResponse], error) {
+func (s *CounterServer) Increment(ctx context.Context, req *counterpb.IncrementRequest) (*counterpb.IncrementResponse, error) {
 	newValue := atomic.AddInt64(&counter, 1)
 	res := &counterpb.IncrementResponse{
 		Value: newValue,
 	}
-	return connect.NewResponse(res), nil
+	return res, nil
 }
 
 func main() {

@@ -5,4 +5,7 @@ plugins:
     opt: paths=source_relative
   - name: js
     out: frontend/src/generated
-    opt: import_style=commonjs,binary
+    opt: import_style=commonjs
+  - name: grpc-web
+    out: frontend/src/generated
+    opt: import_style=commonjs

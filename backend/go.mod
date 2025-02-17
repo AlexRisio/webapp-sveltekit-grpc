@@ -5,7 +5,6 @@ go 1.22
 toolchain go1.24.0
 
 require (
-	github.com/bufbuild/connect-go v1.10.0
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.35.2
 )
