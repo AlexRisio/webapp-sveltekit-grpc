@@ -4,8 +4,9 @@ plugins:
     out: backend/counterpb
     opt: paths=source_relative
   - name: js
-    out: frontend/src/generated
-    opt: import_style=commonjs
+    out: frontend/src/lib/generated
+    opt: import_style=commonjs,binary
   - name: grpc-web
-    out: frontend/src/generated
-    opt: import_style=commonjs
+    out: frontend/src/lib/generated
+    opt: import_style=commonjs+dts,mode=grpcwebtext
+

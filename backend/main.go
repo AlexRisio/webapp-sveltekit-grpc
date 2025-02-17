@@ -28,7 +28,7 @@ func (s *CounterServer) Increment(ctx context.Context, req *counterpb.IncrementR
 }
 
 func main() {
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", "0.0.0.0:50051")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
