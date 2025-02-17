@@ -6,7 +6,7 @@ import (
 	"net"
 	"sync/atomic"
 
-	"github.com/AlexRisio/webapp-sveltekit-grpc/backend/counterpb" // Correct import path for local package
+	"github.com/AlexRisio/webapp-sveltekit-grpc/backend/counterpb" // Local import path
 	"github.com/bufbuild/connect-go"
 	"google.golang.org/grpc"
 )
