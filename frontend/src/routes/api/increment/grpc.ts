@@ -1,69 +1,46 @@
 import pkg from '@improbable-eng/grpc-web';
 const { grpc } = pkg;
-import { IncrementRequest, IncrementResponse, methodDescriptor } from '$lib/grpc/counter';
+import { NodeHttpTransport } from '@improbable-eng/grpc-web-node-http-transport';
+import { IncrementRequest, IncrementResponse } from '$lib/grpc/counter';
 
-export class GrpcWebImpl {
-    private host: string;
-    private options: any;
+// Define the method descriptor with explicit false values for requestStream and responseStream
+const methodDescriptor = {
+    methodName: 'Increment',
+    service: { serviceName: 'counter.Counter' },
+    requestStream: false as const,
+    responseStream: false as const,
+    requestType: IncrementRequest,
+    responseType: IncrementResponse,
+    requestSerialize: (request: IncrementRequest) => request.serializeBinary(),
+    responseDeserialize: (bytes: Uint8Array) => IncrementResponse.deserializeBinary(bytes),
+};
 
-    constructor(host: string, options: any) {
-        this.host = host;
-        this.options = {
-            ...options,
-            debug: true
-        };
-    }
+// Set the transport for server-side
+grpc.setDefaultTransport(NodeHttpTransport());
 
-    unary(
-        request: IncrementRequest,
-        metadata: pkg.grpc.Metadata | undefined,
-    ): Promise<any> {
+const client = {
+    increment: () => {
         return new Promise((resolve, reject) => {
+            const request = new IncrementRequest();
+            console.log('Sending increment request...');
+            
             grpc.unary(methodDescriptor, {
-                request,
-                host: this.host,
-                metadata: metadata,
-                ...this.options,
+                request: request,
+                host: "http://localhost:8080",
+                transport: NodeHttpTransport(),
+                debug: true,
                 onEnd: (response) => {
+                    console.log('Received response:', response);
                     if (response.status === grpc.Code.OK && response.message) {
-                        resolve(IncrementResponse.deserializeBinary(response.message as Uint8Array));
+                        resolve(response.message.toObject());
                     } else {
-                        const error = new Error(response.statusMessage || 'Unknown gRPC error');
-                        console.error('gRPC error details:', {
-                            status: response.status,
-                            statusMessage: response.statusMessage,
-                            headers: response.headers,
-                            message: response.message,
-                            trailers: response.trailers
-                        });
-                        reject(error);
+                        console.error('gRPC error:', response);
+                        reject(new Error(response.statusMessage || 'Unknown error'));
                     }
-                },
+                }
             });
         });
     }
-}
+};
 
-export class CounterClient {
-    private rpc: GrpcWebImpl;
-
-    constructor(rpc: GrpcWebImpl) {
-        this.rpc = rpc;
-    }
-
-    increment(request: IncrementRequest, callback: (error: any, response: IncrementResponse | null) => void): void {
-        this.rpc.unary(request, undefined)
-            .then(response => callback(null, response))
-            .catch(error => {
-                console.error('Counter increment error:', error);
-                callback(error, null);
-            });
-    }
-}
-
-interface UnaryMethodDefinitionish {
-    methodName: string;
-    service: string;
-    requestStream: boolean;
-    responseStream: boolean;
-}
+export default client;

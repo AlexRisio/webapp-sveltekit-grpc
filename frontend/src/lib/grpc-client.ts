@@ -1,36 +1,36 @@
-import pkg from '@improbable-eng/grpc-web';
-const { grpc } = pkg;
+import { grpc } from '@improbable-eng/grpc-web';
 import { NodeHttpTransport } from '@improbable-eng/grpc-web-node-http-transport';
-import { IncrementRequest } from '$lib/grpc/counter';
-
-// Set the transport for server-side
-grpc.setDefaultTransport(NodeHttpTransport());
+import { IncrementRequest, IncrementResponse } from './grpc/counter';
 
 const client = {
     increment: () => {
         return new Promise((resolve, reject) => {
             const request = new IncrementRequest();
             
-            grpc.unary({
-                methodName: "/counter.Counter/Increment",
-                service: { serviceName: "counter.Counter" },
-                requestStream: false,
-                responseStream: false,
-                request: request,
-                host: "http://localhost:8080",
-                transport: NodeHttpTransport(),
-                debug: true,
-                onEnd: (response) => {
-                    if (response.status === grpc.Code.OK && response.message) {
-                        resolve(response.message);
-                    } else {
-                        console.error('gRPC error:', response);
-                        reject(new Error(response.statusMessage || 'Unknown error'));
+            grpc.unary(
+                {
+                    methodName: 'Increment',
+                    service: { serviceName: 'counter.Counter' },
+                    requestStream: false,
+                    responseStream: false,
+                    requestType: IncrementRequest,
+                    responseType: IncrementResponse,
+                },
+                {
+                    request: request,
+                    host: 'http://localhost:8080',
+                    transport: NodeHttpTransport(),
+                    onEnd: (response) => {
+                        if (response.status === grpc.Code.OK && response.message) {
+                            resolve(response.message.toObject());
+                        } else {
+                            reject(new Error('Failed to increment counter'));
+                        }
                     }
                 }
-            });
+            );
         });
     }
 };
 
-export default client; 
+export default client;

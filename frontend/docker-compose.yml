@@ -1,0 +1,24 @@
+services:
+  grpc-server:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    networks:
+      - envoy_network
+
+  envoy:
+    image: envoyproxy/envoy:v1.18.3
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    depends_on:
+      - grpc-server
+    networks:
+      - envoy_network
+
+networks:
+  envoy_network:

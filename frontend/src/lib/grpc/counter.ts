@@ -18,6 +18,10 @@ export class IncrementRequest extends protobuf.Message {
         const msg = new IncrementRequest();
         return msg;
     }
+
+    toObject(includeInstance = false): object {
+        return {};
+    }
 }
 
 export class IncrementResponse extends protobuf.Message {
@@ -54,6 +58,12 @@ export class IncrementResponse extends protobuf.Message {
         }
         return msg;
     }
+
+    toObject(includeInstance = false): object {
+        return {
+            value: this.value
+        };
+    }
 }
 
 export const methodDescriptor = {
@@ -64,5 +74,5 @@ export const methodDescriptor = {
     requestType: IncrementRequest,
     responseType: IncrementResponse,
     requestSerialize: (request: IncrementRequest) => request.serializeBinary(),
-    responseDeserialize: IncrementResponse.deserializeBinary
+    responseDeserialize: (bytes: Uint8Array) => IncrementResponse.deserializeBinary(bytes),
 };
